@@ -1,22 +1,27 @@
 package com.gmail.wizaripost.vk_team_bot.service
 
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.PropertySource
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import ru.mail.im.botapi.BotApiClient
 import ru.mail.im.botapi.BotApiClientController
 import ru.mail.im.botapi.entity.ChatAction
 import ru.mail.im.botapi.fetcher.OnEventFetchListener
 import ru.mail.im.botapi.fetcher.event.Event
-import java.util.Scanner
+import java.util.*
 
+@PropertySource("classpath:secret.properties")
 @Component
 class SimpleStart() {
+    @Value("\${vkteams.token}")
+    private lateinit var token: String
+    @Value("\${vkteams.chat-id}")
+    private lateinit var chatId: String
+
+
     fun start() {
         val scanner: Scanner = Scanner(System.`in`)
-        println("Enter bot token:")
-        val token: String = "123"
-        println("Enter test chatId:")
-        val chatId: String? = "123"
 
         val client = BotApiClient(token)
 

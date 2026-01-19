@@ -65,10 +65,15 @@
 <!--			<artifactId>httpclient5</artifactId>-->
 <!--		</dependency>-->
 
+<!--		<dependency>-->
+<!--			<groupId>ru.mail.im</groupId>-->
+<!--			<artifactId>bot-api</artifactId>-->
+<!--			<version>1.2.3</version>-->
+<!--		</dependency>-->
 		<dependency>
-			<groupId>ru.mail.im</groupId>
-			<artifactId>bot-api</artifactId>
-			<version>1.2.3</version>
+			<groupId>ru.octaviangameart</groupId>
+			<artifactId>vk-teams-bot-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
