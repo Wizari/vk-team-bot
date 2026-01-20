@@ -7,11 +7,9 @@ spring:
   application:
     name: vk-team-bot
 
-vk-team:
-  access-token: "YOUR_ACCESS_TOKEN" # Токен сообщества VK Team
-  api-version: "5.199" # Версия API
-  confirmation-token: "YOUR_CONFIRMATION_TOKEN" # Строка для подтверждения
-  secret-key: "YOUR_SECRET_KEY" # Секретный ключ (опционально)
+vk-team-bot:
+  token: "001.3431423473.1448932591:1011954462" # Токен сообщества VK Team
+  chat-id: "AoLO5fFmNM4qLdK28wY"
 
 logging:
   level:

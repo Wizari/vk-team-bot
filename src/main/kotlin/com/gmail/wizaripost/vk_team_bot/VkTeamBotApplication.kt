@@ -1,17 +1,9 @@
 package com.gmail.wizaripost.vk_team_bot
 
-import com.gmail.wizaripost.vk_team_bot.service.SimpleStart
+import com.gmail.wizaripost.vk_team_bot.service.VkTeamsBotService
 import org.springframework.beans.factory.getBean
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
-import org.springframework.scheduling.annotation.EnableAsync
-import org.springframework.scheduling.annotation.EnableScheduling
-import ru.mail.im.botapi.BotApiClient
-//import ru.mail.im.botapi.BotApiClient
-import ru.mail.im.botapi.BotApiClientController
-
 
 @SpringBootApplication
 class VkTeamBotApplication
@@ -19,8 +11,10 @@ class VkTeamBotApplication
 fun main(args: Array<String>) {
 //	runApplication<VkTeamBotApplication>(*args)
 	val application = runApplication<VkTeamBotApplication>(*args)
-	val sempleStart = application.getBean<SimpleStart>()
-	sempleStart.start()
+//	val sempleStart = application.getBean<SimpleStart>()
+//	sempleStart.start()
+	val sempleStart = application.getBean<VkTeamsBotService>()
+	sempleStart.send("SS 123")
 
 
 
