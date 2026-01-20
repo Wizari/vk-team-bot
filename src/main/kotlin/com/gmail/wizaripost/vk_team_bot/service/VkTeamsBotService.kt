@@ -17,67 +17,44 @@ class VkTeamsBotService(
     private val client: BotApiClient = BotApiClient(token)
     private val controller = BotApiClientController.startBot(client)
 
-    // Спецсимволы, которые нужно экранировать
-    private val specialCharacters = mapOf(
-        '_' to "\\_",
-        '*' to "\\*",
-        '[' to "\\[",
-        ']' to "\\]",
-        '(' to "\\(",
-        ')' to "\\)",
-        '~' to "\\~",
-        '`' to "\\`",
-        '>' to "\\>",
-        '#' to "\\#",
-        '+' to "\\+",
-        '-' to "\\-",
-        '=' to "\\=",
-        '|' to "\\|",
-        '{' to "\\{",
-        '}' to "\\}",
-        '.' to "\\.",
-        '!' to "\\!"
-    )
+    fun splitMessage(text: String, maxLength: Int = 4000): List<String> {
+        val codeBlockOverhead = 7  // ```\n + \n``` = 7 символов
+        val actualMaxLength = maxLength - codeBlockOverhead
 
-    // Экранирование спецсимволов
-    fun escapeSpecialCharacters(text: String): String {
-        val escapedText = StringBuilder()
-
-        for (char in text) {
-            escapedText.append(specialCharacters[char] ?: char.toString())
+        if (text.length <= actualMaxLength) {
+            return listOf(wrapInCodeBlock(text))
         }
 
-        return escapedText.toString()
-    }
-
-    // Разбивка текста на части по maxLength символов
-    fun splitMessage(text: String, maxLength: Int = 4000): List<String> {
         val result = mutableListOf<String>()
         var currentIndex = 0
 
         while (currentIndex < text.length) {
-            val endIndex = minOf(currentIndex + maxLength, text.length)
-            result.add(text.substring(currentIndex, endIndex))
+            val endIndex = minOf(currentIndex + actualMaxLength, text.length)
+            val chunk = text.substring(currentIndex, endIndex)
+            result.add(wrapInCodeBlock(chunk))
             currentIndex = endIndex
         }
 
         return result
     }
 
-    override fun send(payload: String) {
-//        // 1. Экранируем спецсимволы
-//        val escapedPayload = escapeSpecialCharacters(payload)
+    private fun wrapInCodeBlock(text: String): String {
+        return "```\n$text\n```"
+    }
 
-        // 2. Разбиваем на части, если нужно
+    override fun send(payload: String) {
         val messageParts = splitMessage(payload)
 
-        // 3. Отправляем каждую часть
         messageParts.forEach { part ->
             controller.sendTextMessage(
                 SendTextRequest()
                     .setChatId(chatId)
                     .setText(part)
             ).getMsgId()
+            // Небольшая задержка между отправками, если частей много
+            if (messageParts.size > 1) {
+                Thread.sleep(100)
+            }
         }
     }
 }
