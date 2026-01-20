@@ -14,15 +14,70 @@ class VkTeamsBotService(
     private var chatId: String
 ): MessageSender {
 
-    var client: BotApiClient = BotApiClient(token)
-    var controller = BotApiClientController.startBot(client);
+    private val client: BotApiClient = BotApiClient(token)
+    private val controller = BotApiClientController.startBot(client)
 
-    override fun send(payload: String) {
-        controller.sendTextMessage(
-            SendTextRequest()
-                .setChatId(chatId)
-                .setText(payload)
-        ).getMsgId()
+    // Спецсимволы, которые нужно экранировать
+    private val specialCharacters = mapOf(
+        '_' to "\\_",
+        '*' to "\\*",
+        '[' to "\\[",
+        ']' to "\\]",
+        '(' to "\\(",
+        ')' to "\\)",
+        '~' to "\\~",
+        '`' to "\\`",
+        '>' to "\\>",
+        '#' to "\\#",
+        '+' to "\\+",
+        '-' to "\\-",
+        '=' to "\\=",
+        '|' to "\\|",
+        '{' to "\\{",
+        '}' to "\\}",
+        '.' to "\\.",
+        '!' to "\\!"
+    )
+
+    // Экранирование спецсимволов
+    fun escapeSpecialCharacters(text: String): String {
+        val escapedText = StringBuilder()
+
+        for (char in text) {
+            escapedText.append(specialCharacters[char] ?: char.toString())
+        }
+
+        return escapedText.toString()
     }
 
+    // Разбивка текста на части по maxLength символов
+    fun splitMessage(text: String, maxLength: Int = 4000): List<String> {
+        val result = mutableListOf<String>()
+        var currentIndex = 0
+
+        while (currentIndex < text.length) {
+            val endIndex = minOf(currentIndex + maxLength, text.length)
+            result.add(text.substring(currentIndex, endIndex))
+            currentIndex = endIndex
+        }
+
+        return result
+    }
+
+    override fun send(payload: String) {
+//        // 1. Экранируем спецсимволы
+//        val escapedPayload = escapeSpecialCharacters(payload)
+
+        // 2. Разбиваем на части, если нужно
+        val messageParts = splitMessage(payload)
+
+        // 3. Отправляем каждую часть
+        messageParts.forEach { part ->
+            controller.sendTextMessage(
+                SendTextRequest()
+                    .setChatId(chatId)
+                    .setText(part)
+            ).getMsgId()
+        }
+    }
 }
