@@ -19,7 +19,7 @@ class VkTeamsBotService(
     private val client: BotApiClient = BotApiClient(token)
     private val controller = BotApiClientController.startBot(client)
 
-    fun splitMessage(text: String, maxLength: Int = 40000): MutableList<String> {
+    fun splitMessage(text: String, maxLength: Int = 47000): MutableList<String> {
         val codeBlockOverhead = 30  // ```\n + \n```  + date
         val actualMaxLength = maxLength - codeBlockOverhead
 
@@ -48,9 +48,9 @@ class VkTeamsBotService(
     override fun send(payload: String) {
         val messageParts = splitMessage(payload)
 
+        //add date first message
         val timestamp = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
-
         var firstPart = "${timestamp.format(formatter)}\n${messageParts.get(0)}"
         messageParts.set(0, firstPart)
 
