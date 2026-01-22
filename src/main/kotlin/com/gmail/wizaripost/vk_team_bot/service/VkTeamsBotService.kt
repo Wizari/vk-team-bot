@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service
 import ru.mail.im.botapi.BotApiClient
 import ru.mail.im.botapi.BotApiClientController
 import ru.mail.im.botapi.api.entity.SendTextRequest
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class VkTeamsBotService(
@@ -17,12 +19,13 @@ class VkTeamsBotService(
     private val client: BotApiClient = BotApiClient(token)
     private val controller = BotApiClientController.startBot(client)
 
-    fun splitMessage(text: String, maxLength: Int = 4000): List<String> {
-        val codeBlockOverhead = 7  // ```\n + \n``` = 7 символов
+//    fun splitMessage(text: String, maxLength: Int = 4000): List<String> {
+    fun splitMessage(text: String, maxLength: Int = 40000): MutableList<String> {
+        val codeBlockOverhead = 9  // ```\n + \n``` = 7 символов
         val actualMaxLength = maxLength - codeBlockOverhead
 
         if (text.length <= actualMaxLength) {
-            return listOf(wrapInCodeBlock(text))
+            return mutableListOf(wrapInCodeBlock(text))
         }
 
         val result = mutableListOf<String>()
@@ -42,8 +45,28 @@ class VkTeamsBotService(
         return "```\n$text\n```"
     }
 
+
     override fun send(payload: String) {
-        val messageParts = splitMessage(payload)
+        var stringBuilder = StringBuilder()
+        stringBuilder.append(payload)
+        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+//        stringBuilder.append(payload)
+        val string = stringBuilder.toString()
+
+        val messageParts = splitMessage(string)
+
+        val timestamp = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
+
+        var firstPart = "${timestamp.format(formatter)}\n${messageParts.get(0)}"
+        messageParts.set(0, firstPart)
 
         messageParts.forEach { part ->
             controller.sendTextMessage(
