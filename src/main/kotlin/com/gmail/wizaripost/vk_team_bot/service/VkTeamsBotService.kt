@@ -14,14 +14,13 @@ class VkTeamsBotService(
     private var token: String,
     @Value("\${vk-team-bot.chat-id}")
     private var chatId: String
-): MessageSender {
+) : MessageSender {
 
     private val client: BotApiClient = BotApiClient(token)
     private val controller = BotApiClientController.startBot(client)
 
-//    fun splitMessage(text: String, maxLength: Int = 4000): List<String> {
     fun splitMessage(text: String, maxLength: Int = 40000): MutableList<String> {
-        val codeBlockOverhead = 9  // ```\n + \n``` = 7 символов
+        val codeBlockOverhead = 30  // ```\n + \n```  + date
         val actualMaxLength = maxLength - codeBlockOverhead
 
         if (text.length <= actualMaxLength) {
@@ -47,20 +46,7 @@ class VkTeamsBotService(
 
 
     override fun send(payload: String) {
-        var stringBuilder = StringBuilder()
-        stringBuilder.append(payload)
-        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-//        stringBuilder.append(payload)
-        val string = stringBuilder.toString()
-
-        val messageParts = splitMessage(string)
+        val messageParts = splitMessage(payload)
 
         val timestamp = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
