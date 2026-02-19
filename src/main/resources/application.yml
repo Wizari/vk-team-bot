@@ -8,8 +8,8 @@ spring:
     name: vk-team-bot
 
 vk-team-bot:
-  token: "xxx2" # Токен сообщества VK Team
-  chat-id: "xxx"
+  token: "001
+  chat-id: "AoL
 
 logging:
   level:
